@@ -1,5 +1,6 @@
-node_modules
-dist
+node_modules/
+dist/
+build/
 dist-ssr
 *.local
 
@@ -14,4 +15,6 @@ dist-ssr
 *.sw?
 
 .env
+.env.*
 .env.local
+!.env.example
