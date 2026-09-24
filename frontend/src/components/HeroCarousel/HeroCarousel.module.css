@@ -1,0 +1,129 @@
+.hero {
+  padding-block: var(--space-6) var(--space-7);
+}
+
+.slide {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  animation: fade-in 0.35s ease;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.mediaWrap {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.mediaLink {
+  display: block;
+}
+
+.media {
+  aspect-ratio: 16 / 11;
+  border-radius: var(--radius-lg);
+}
+
+.navBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--color-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+  transition: color 0.15s ease;
+}
+.navBtn:hover {
+  color: var(--color-accent);
+}
+
+.navPrev {
+  inset-inline-start: var(--space-3);
+}
+.navNext {
+  inset-inline-end: var(--space-3);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.title {
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.description {
+  color: var(--color-ink-soft);
+  max-width: 46ch;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--color-border-strong);
+  padding: 0;
+}
+
+.dotActive {
+  background: var(--color-accent);
+  width: 22px;
+  border-radius: var(--radius-pill);
+  transition: width 0.2s ease;
+}
+
+@media (min-width: 860px) {
+  .slide {
+    flex-direction: row;
+    align-items: center;
+  }
+  .mediaWrap,
+  .info {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .info {
+    padding-inline: var(--space-6);
+  }
+}

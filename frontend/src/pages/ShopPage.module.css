@@ -1,0 +1,26 @@
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-bottom: var(--space-6);
+}
+
+.searchWrap {
+  width: 100%;
+}
+
+.grid {
+  padding-bottom: var(--space-8);
+}
+
+@media (min-width: 720px) {
+  .toolbar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+  }
+  .searchWrap {
+    max-width: 340px;
+  }
+}
