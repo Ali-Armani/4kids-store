@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
-import { getProductBySlug, getRelatedProducts } from '../data/products';
 import { ProductMedia } from '../components/ProductMedia/ProductMedia';
 import { ProductCard } from '../components/ProductCard/ProductCard';
 import { QuantitySelector } from '../components/QuantitySelector/QuantitySelector';
 import { HeartIcon } from '../components/icons/Icons';
+import { useProducts } from '../context/ProductsContext';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useToast } from '../context/ToastContext';
@@ -14,11 +14,39 @@ import styles from './ProductDetailPage.module.css';
 
 export function ProductDetailPage() {
   const { slug = '' } = useParams();
-  const product = getProductBySlug(slug);
+  const { products, loading, error } = useProducts();
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
   const { showToast } = useToast();
+
+  const product = useMemo(
+    () => products.find((p) => p.slug === slug),
+    [products, slug]
+  );
+
+  const related = useMemo(() => {
+    if (!product) return [];
+    return products
+      .filter((item) => item.category === product.category && item.id !== product.id)
+      .slice(0, 4);
+  }, [products, product]);
+
+  if (loading) {
+    return (
+      <div className="container">
+        <p>در حال بارگذاری...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container">
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   if (!product) {
     return <Navigate to="/404" replace />;
@@ -26,7 +54,6 @@ export function ProductDetailPage() {
 
   const discount = discountPercent(product.price, product.compareAtPrice);
   const wishlisted = isWishlisted(product.id);
-  const related = getRelatedProducts(product);
 
   const handleAddToCart = () => {
     addToCart(product, quantity);

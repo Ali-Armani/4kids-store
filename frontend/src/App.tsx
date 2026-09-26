@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { ProductsProvider } from './context/ProductsContext';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { ToastProvider } from './context/ToastContext';
@@ -44,13 +45,15 @@ function AppLayout() {
 export default function App() {
   return (
     <BrowserRouter>
-      <ToastProvider>
-        <CartProvider>
-          <WishlistProvider>
-            <AppLayout />
-          </WishlistProvider>
-        </CartProvider>
-      </ToastProvider>
+      <ProductsProvider>
+        <ToastProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <AppLayout />
+            </WishlistProvider>
+          </CartProvider>
+        </ToastProvider>
+      </ProductsProvider>
     </BrowserRouter>
   );
 }

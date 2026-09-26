@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom';
 import { HeroCarousel } from '../components/HeroCarousel/HeroCarousel';
 import { ProductCard } from '../components/ProductCard/ProductCard';
-import { products } from '../data/products';
+import { useProducts } from '../context/ProductsContext';
 import { CATEGORY_LABELS, type ProductCategory } from '../types/product';
 import styles from './HomePage.module.css';
 
 const CATEGORY_ORDER: ProductCategory[] = ['doll', 'hair-clip', 'headband', 'hair-tie', 'gift-set'];
 
 export function HomePage() {
+
+  const { products, loading, error } = useProducts();
+
   return (
     <div>
       <HeroCarousel />
@@ -35,11 +38,16 @@ export function HomePage() {
               مشاهده همه
             </Link>
           </div>
-          <div className="product-grid">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+
+          {loading && <p>در حال بارگذاری محصولات...</p>}
+          {error && <p>{error}</p>}
+          {!loading && !error && (
+            <div className="product-grid">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </div>

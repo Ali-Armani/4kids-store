@@ -4,11 +4,12 @@ import { ProductCard } from '../components/ProductCard/ProductCard';
 import { CategoryFilter, type CategoryValue } from '../components/CategoryFilter/CategoryFilter';
 import { SearchBar } from '../components/SearchBar/SearchBar';
 import { EmptyState } from '../components/EmptyState/EmptyState';
-import { products } from '../data/products';
+import { useProducts } from '../context/ProductsContext';
 import { toPersianDigits } from '../utils/formatPrice';
 import styles from './ShopPage.module.css';
 
 export function ShopPage() {
+  const { products, loading, error } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') ?? '';
   const category = (searchParams.get('category') as CategoryValue) || 'all';
@@ -23,7 +24,7 @@ export function ShopPage() {
         product.shortDescription.toLowerCase().includes(normalizedQuery);
       return matchesCategory && matchesQuery;
     });
-  }, [query, category]);
+  }, [products, query, category]);
 
   const updateParams = (next: { q?: string; category?: CategoryValue }) => {
     const params = new URLSearchParams(searchParams);
@@ -37,6 +38,22 @@ export function ShopPage() {
     }
     setSearchParams(params);
   };
+
+  if (loading) {
+    return (
+      <div className="container">
+        <p>در حال بارگذاری محصولات...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container">
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div>
