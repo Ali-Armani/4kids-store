@@ -5,7 +5,7 @@ import { useProducts } from '../context/ProductsContext';
 import { CATEGORY_LABELS, type ProductCategory } from '../types/product';
 import styles from './HomePage.module.css';
 
-const CATEGORY_ORDER: ProductCategory[] = ['doll', 'hair-clip', 'headband', 'hair-tie', 'gift-set'];
+const CATEGORY_ORDER: ProductCategory[] = ['cartoon-doll', 'silicone-doll', 'surprise-doll', 'piano-doll', 'hair-accessory', 'keychain', 'leather-bag', 'pipe-lighter', 'vape', 'earplug'];
 
 export function HomePage() {
 
