@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getFeaturedProducts } from '../../data/products';
+import { useProducts } from '../../context/ProductsContext';
 import { ProductMedia } from '../ProductMedia/ProductMedia';
 import { ChevronIcon } from '../icons/Icons';
 import { useCart } from '../../context/CartContext';
@@ -12,7 +12,9 @@ import styles from './HeroCarousel.module.css';
 const AUTO_PLAY_MS = 5000;
 
 export function HeroCarousel() {
-  const slides = getFeaturedProducts();
+  const { products } = useProducts();
+  const slides = useMemo(() => products.filter((product) => product.featured), [products]);
+
   const [index, setIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const { addToCart } = useCart();
@@ -30,6 +32,11 @@ export function HeroCarousel() {
     },
     [slides.length]
   );
+
+  // اگر تعداد اسلایدها کم شود (مثلاً بعد از لود دیتا)، ایندکس را داخل محدوده نگه دار
+  useEffect(() => {
+    if (index >= slides.length) setIndex(0);
+  }, [slides.length, index]);
 
   useEffect(() => {
     if (isPaused || prefersReducedMotion || slides.length <= 1) return;

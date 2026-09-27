@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from 'react';
 import type { Product } from '../types/product';
-import { products } from '../data/products';
+import { useProducts } from './ProductsContext';
 
 interface WishlistContextValue {
   items: Product[];
@@ -33,6 +33,7 @@ function readStoredWishlist(): string[] {
 }
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
+  const { products } = useProducts();
   const [productIds, setProductIds] = useState<string[]>(() => readStoredWishlist());
 
   useEffect(() => {
@@ -55,7 +56,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
 
   const items = useMemo(
     () => products.filter((product) => productIds.includes(product.id)),
-    [productIds]
+    [productIds, products]
   );
 
   const value: WishlistContextValue = { items, isWishlisted, toggleWishlist };

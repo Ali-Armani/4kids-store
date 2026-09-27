@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from 'react';
 import type { Product } from '../types/product';
-import { products } from '../data/products';
+import { useProducts } from './ProductsContext';
 
 export interface CartLine {
   productId: string;
@@ -48,6 +48,7 @@ function readStoredCart(): CartLine[] {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { products } = useProducts();
   const [lines, setLines] = useState<CartLine[]>(() => readStoredCart());
 
   useEffect(() => {
@@ -96,7 +97,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           return product ? { ...line, product } : null;
         })
         .filter((item): item is CartItemDetailed => item !== null),
-    [lines]
+    [lines, products]
   );
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
