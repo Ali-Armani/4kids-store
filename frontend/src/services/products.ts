@@ -1,7 +1,6 @@
 import { supabase } from '../lib/supabaseClient';
 import type { Product } from '../types/product';
 
-// شکل خام یک ردیف در جدول Supabase (snake_case)
 interface ProductRow {
   id: string;
   slug: string;
