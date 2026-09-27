@@ -9,7 +9,7 @@ import { formatToman } from '../../utils/formatPrice';
 import { CATEGORY_LABELS } from '../../types/product';
 import styles from './HeroCarousel.module.css';
 
-const AUTO_PLAY_MS = 5000;
+const AUTO_PLAY_MS = 3000;
 
 export function HeroCarousel() {
   const { products } = useProducts();
