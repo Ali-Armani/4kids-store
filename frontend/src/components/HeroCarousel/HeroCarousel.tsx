@@ -98,7 +98,7 @@ export function HeroCarousel() {
 
           <div className={styles.info}>
             <span className="badge badge-gold">{CATEGORY_LABELS[activeProduct.category]}</span>
-            <h1 className={styles.title}>{activeProduct.name}</h1>
+            <h2 className={styles.title}>{activeProduct.name}</h2>
             <p className={styles.description}>{activeProduct.shortDescription}</p>
             <div className={styles.priceRow}>
               <span className="price">{formatToman(activeProduct.price)}</span>
