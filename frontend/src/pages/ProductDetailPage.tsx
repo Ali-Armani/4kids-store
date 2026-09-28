@@ -10,7 +10,14 @@ import { useWishlist } from '../context/WishlistContext';
 import { useToast } from '../context/ToastContext';
 import { formatToman, discountPercent } from '../utils/formatPrice';
 import { CATEGORY_LABELS } from '../types/product';
+import { usePageMeta } from '../hooks/usePageMeta';
 import styles from './ProductDetailPage.module.css';
+
+// توضیح متا برای گوگل باید کوتاه باشد (حدود ۱۵۵ حرف)
+function truncate(text: string, max: number) {
+  const clean = text.replace(/\s+/g, ' ').trim();
+  return clean.length > max ? `${clean.slice(0, max - 1).trimEnd()}…` : clean;
+}
 
 export function ProductDetailPage() {
   const { slug = '' } = useParams();
@@ -31,6 +38,14 @@ export function ProductDetailPage() {
       .filter((item) => item.category === product.category && item.id !== product.id)
       .slice(0, 4);
   }, [products, product]);
+
+  // این hook باید قبل از هر return شرطی بیاید
+  usePageMeta({
+    title: product ? `${product.name} | ۴کیدز` : '۴کیدز',
+    description: product
+      ? truncate(product.shortDescription, 155)
+      : 'فروشگاه آنلاین ۴کیدز؛ عروسک، اکسسوری مو، جاکلیدی و کیف چرم.',
+  });
 
   if (loading) {
     return (
@@ -101,7 +116,9 @@ export function ProductDetailPage() {
             </div>
             <div>
               <dt>وضعیت موجودی</dt>
-              <dd className={product.inStock ? styles.inStock : styles.outOfStock}>
+              <dd
+
+className={product.inStock ? styles.inStock : styles.outOfStock}>
                 {product.inStock ? 'موجود' : 'ناموجود'}
               </dd>
             </div>
