@@ -50,7 +50,7 @@ export function Footer() {
           © {toPersianDigits(year)} &nbsp;
            تمامی حقوق محفوظ است. 
            طراح سایت:&nbsp;
-           <a href="https://ali-armani.githb.io" target='_blank' rel='noopener noreferrer'>علی آرمانی</a>
+           <a href="https://ali-armani.github.io" target='_blank' rel='noopener noreferrer'>علی آرمانی</a>
         </span>
       </div>
     </footer>
