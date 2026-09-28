@@ -49,7 +49,8 @@ export function Footer() {
         <span>
           © {toPersianDigits(year)} &nbsp;
            تمامی حقوق محفوظ است. 
-          طراح سایت: علی آرمانی
+           طراح سایت:&nbsp;
+           <a href="https://ali-armani.githb.io" target='_blank' rel='noopener noreferrer'>علی آرمانی</a>
         </span>
       </div>
     </footer>
