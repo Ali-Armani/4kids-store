@@ -6,13 +6,42 @@ import { SearchBar } from '../components/SearchBar/SearchBar';
 import { EmptyState } from '../components/EmptyState/EmptyState';
 import { useProducts } from '../context/ProductsContext';
 import { toPersianDigits } from '../utils/formatPrice';
+import { CATEGORY_LABELS, type ProductCategory } from '../types/product';
+import { usePageMeta } from '../hooks/usePageMeta';
 import styles from './ShopPage.module.css';
+
+// این دو دسته فقط اطلاعاتی‌اند و سبد خرید ندارند، پس «خرید» در عنوانشان نمی‌آید
+const INFO_ONLY_CATEGORIES: ProductCategory[] = ['pipe-lighter', 'vape'];
 
 export function ShopPage() {
   const { products, loading, error } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') ?? '';
-  const category = (searchParams.get('category') as CategoryValue) || 'all';
+
+  // مقدار category از آدرس فقط وقتی پذیرفته می‌شود که یکی از کلیدهای واقعی باشد
+  const rawCategory = searchParams.get('category');
+  const activeCategory: ProductCategory | null =
+    rawCategory && Object.prototype.hasOwnProperty.call(CATEGORY_LABELS, rawCategory)
+      ? (rawCategory as ProductCategory)
+      : null;
+  const category: CategoryValue = activeCategory ?? 'all';
+
+  const categoryLabel = activeCategory ? CATEGORY_LABELS[activeCategory] : null;
+  const isInfoOnly = activeCategory !== null && INFO_ONLY_CATEGORIES.includes(activeCategory);
+  const heading = !categoryLabel
+    ? 'خرید عروسک و اکسسوری'
+    : isInfoOnly
+      ? categoryLabel
+      : `خرید ${categoryLabel}`;
+
+  // این hook باید قبل از هر return شرطی بیاید
+  usePageMeta({
+    title: `${heading} | ۴کیدز`,
+    description: categoryLabel
+      ? `${heading} در فروشگاه آنلاین ۴کیدز؛ مشاهده مدل‌ها و قیمت‌ها.`
+      : 'مشاهده و خرید عروسک، اکسسوری مو، جاکلیدی و کیف چرم در فروشگاه آنلاین ۴کیدز.',
+    noindex: query.trim() !== '',
+  });
 
   const filtered = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -58,7 +87,7 @@ export function ShopPage() {
   return (
     <div>
       <div className="page-header container">
-        <h1>فروشگاه</h1>
+        <h1>{heading}</h1>
         <p>{toPersianDigits(filtered.length)} محصول</p>
       </div>
 
@@ -77,7 +106,9 @@ export function ShopPage() {
             ))}
           </div>
         ) : (
-          <EmptyState title="محصولی پیدا نشد" description="عبارت جستجو یا دسته‌بندی را تغییر دهید." />
+          <EmptyState title="محصولی پیدا نشد" description="عبارت جستجو
+
+یا دسته‌بندی را تغییر دهید." />
         )}
       </div>
     </div>
