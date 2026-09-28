@@ -46,7 +46,11 @@ export function Footer() {
       </div>
 
       <div className={`container ${styles.bottom}`}>
-        <span>© {toPersianDigits(year)} ۴کیدز. تمام حقوق محفوظ است.</span>
+        <span>
+          © {toPersianDigits(year)} &nbsp;
+           تمامی حقوق محفوظ است. 
+          طراح سایت: علی آرمانی
+        </span>
       </div>
     </footer>
   );
