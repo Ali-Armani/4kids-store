@@ -17,6 +17,12 @@ export function HomePage() {
 
       <section className="section">
         <div className="container">
+          <h1 className={styles.homeTitle}>
+            فروشگاه ۴کیدز؛ خرید عروسک، اکسسوری مو و لوازم فانتزی
+          </h1>
+          <p className={styles.homeIntro}>
+            عروسک، جاکلیدی، کیف چرم و اکسسوری مو با ارسال به سراسر ایران.
+          </p>
           <div className="section-heading">
             <h2>دسته‌بندی‌ها</h2>
           </div>
