@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { toPersianDigits } from '../../utils/formatPrice';
 import styles from './Footer.module.css';
+import CopyButton from "./CopyButton";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -40,7 +41,11 @@ export function Footer() {
             <br />
              آدرس ما: خیابان آزادی - بین آزادی <strong>4</strong> و <strong>6</strong> - فروشگاه 4kids
              <br />
-             تماس با ما: 09113880126
+          </p>
+          <p className='footer-phone'>
+             تماس با ما: &nbsp;
+            <a href="tel: +989113880126" dir='ltr'>09113880126</a>
+            <CopyButton value='+989113880126' />
           </p>
         </div>
       </div>
