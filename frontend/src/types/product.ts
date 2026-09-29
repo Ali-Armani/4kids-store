@@ -3,6 +3,7 @@ export type ProductCategory =
   | 'silicone-doll'
   | 'surprise-doll'
   | 'piano-doll'
+  | 'plush-doll'
   | 'hair-accessory'
   | 'keychain'
   | 'leather-bag'
@@ -35,6 +36,7 @@ export const CATEGORY_LABELS: Record<ProductCategory, string> = {
   'silicone-doll': 'عروسک سیلیکونی',
   'surprise-doll': 'عروسک سورپرایزی',
   'piano-doll': 'عروسک پیانویی',
+  'plush-doll': 'عروسک پولیشی',
   'hair-accessory': 'اکسسوری مو',
   'keychain': 'جاکلیدی مردانه و فانتزی',
   'leather-bag': 'کیف چرم مردانه و جاکارتی',
