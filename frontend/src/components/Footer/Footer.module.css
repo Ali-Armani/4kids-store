@@ -50,6 +50,10 @@
   font-size: 0.85rem;
 }
 
+a:hover {
+  color: var(--color-ink);
+}
+
 @media (max-width: 720px) {
   .grid {
     grid-template-columns: 1fr;
