@@ -1,5 +1,5 @@
 /* 
-  add new product 'juje gol be sar'. (without image url)
+  add new product 'kuromi-doll'. (without image url)
 */
 
 insert into products (
