@@ -37,9 +37,9 @@ export function Footer() {
         <div className={styles.col}>
           <h3>درباره ما</h3>
           <p className={styles.tagline}>
-            فروشگاه 4kids فعالیت خود را از سال <strong>86</strong> با عنوان عروسک فروشی <strong>قزل</strong> در بازارچه ساحلی بندر شروع کرد. سپس به قلب بندر ترکمن انتقال یافت.
+            فروشگاه 4Kids فعالیت خود را از سال <strong>86</strong> با عنوان عروسک فروشی <strong>قزل</strong> در بازارچه ساحلی بندر شروع کرد. سپس به قلب بندر ترکمن انتقال یافت.
             <br />
-             آدرس ما: خیابان آزادی - بین آزادی <strong>4</strong> و <strong>6</strong> - فروشگاه 4kids
+             آدرس ما: خیابان آزادی - بین آزادی <strong>4</strong> و <strong>6</strong> - فروشگاه 4Kids
              <br />
           </p>
           <p className='footer-phone'>
