@@ -53,7 +53,7 @@ export function Header() {
         </button>
 
         <Link to="/" className={styles.logo} onClick={closeMobile}>
-          ۴کیدز
+          4Kids
         </Link>
 
         <nav className={styles.nav} aria-label="ناوبری اصلی">
