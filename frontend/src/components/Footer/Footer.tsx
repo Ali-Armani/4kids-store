@@ -10,7 +10,7 @@ export function Footer() {
     <footer className={styles.footer}>
       <div className={`container ${styles.grid}`}>
         <div>
-          <span className={styles.logo}>۴کیدز</span>
+          <span className={styles.logo}>4Kids</span>
           <p className={styles.tagline}>
             انواع عروسک، اکسسوری مو، گوش‌گیر فانتزی، جاکلیدی، کیف چرم و جاکارتی و غیره. با ارسال به سراسر ایران!
           </p>
