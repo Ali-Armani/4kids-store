@@ -1,6 +1,6 @@
 
 /* 
-  add new product 'khers-lebas-fazayi-doll'.
+  add new product 'khook-lop-dar-ghalb-be-dast-doll'.
 */
 
 insert into products (
