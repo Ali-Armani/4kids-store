@@ -1,15 +1,15 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { HeroCarousel } from '../components/HeroCarousel/HeroCarousel';
 import { ProductCard } from '../components/ProductCard/ProductCard';
 import { useProducts } from '../context/ProductsContext';
-import { CATEGORY_LABELS, type ProductCategory } from '../types/product';
+import { CATEGORY_LABELS } from '../types/product';
+import { HOME_VISIBLE_CATEGORIES, buildHomeSections } from '../utils/homeSections';
 import styles from './HomePage.module.css';
 
-const CATEGORY_ORDER: ProductCategory[] = ['cartoon-doll', 'silicone-doll', 'surprise-doll', 'piano-doll', 'plush-doll', 'hair-accessory', 'keychain', 'leather-bag', 'pipe-lighter', 'vape', 'earplug'];
-
 export function HomePage() {
-
   const { products, loading, error } = useProducts();
+  const sections = useMemo(() => buildHomeSections(products), [products]);
 
   return (
     <div>
@@ -27,7 +27,7 @@ export function HomePage() {
             <h2>دسته‌بندی‌ها</h2>
           </div>
           <div className={styles.categoryGrid}>
-            {CATEGORY_ORDER.map((category) => (
+            {HOME_VISIBLE_CATEGORIES.map((category) => (
               <Link key={category} to={`/shop?category=${category}`} className={styles.categoryCard}>
                 {CATEGORY_LABELS[category]}
               </Link>
@@ -47,13 +47,23 @@ export function HomePage() {
 
           {loading && <p>در حال بارگذاری محصولات...</p>}
           {error && <p>{error}</p>}
-          {!loading && !error && (
-            <div className="product-grid">
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          )}
+          {!loading &&
+            !error &&
+            sections.map((section) => (
+              <div key={section.category} className={styles.categorySection}>
+                <div className="section-heading">
+                  <h3 className={styles.categoryTitle}>{CATEGORY_LABELS[section.category]}</h3>
+                  <Link to={`/shop?category=${section.category}`} className="btn btn-outline">
+                    مشاهده همه
+                  </Link>
+                </div>
+                <div className="product-grid">
+                  {section.products.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              </div>
+            ))}
         </div>
       </section>
     </div>
