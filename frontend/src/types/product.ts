@@ -29,6 +29,8 @@ export interface Product {
   imageUrl?: string;
   featured: boolean;
   inStock: boolean;
+  categoryRank?: number;
+  createdAt: string;
 }
 
 export const CATEGORY_LABELS: Record<ProductCategory, string> = {

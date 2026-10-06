@@ -15,6 +15,8 @@ interface ProductRow {
   image_url: string | null;
   featured: boolean;
   in_stock: boolean;
+  category_rank: number | null;
+  created_at: string;
 }
 
 function mapRow(row: ProductRow): Product {
@@ -32,6 +34,8 @@ function mapRow(row: ProductRow): Product {
     imageUrl: row.image_url ?? undefined,
     featured: row.featured,
     inStock: row.in_stock,
+    categoryRank: row.category_rank ?? undefined,
+    createdAt: row.created_at,
   };
 }
 
