@@ -54,9 +54,6 @@ export function HomePage() {
               <div key={section.category} className={styles.categorySection}>
                 <div className="section-heading">
                   <h3 className={styles.categoryTitle}>{CATEGORY_LABELS[section.category]}</h3>
-                  <Link to={`/shop?category=${section.category}`} className="btn btn-outline">
-                    مشاهده همه
-                  </Link>
                 </div>
                 <div className={styles.sectionGrid}>
                   {section.products.map((product, index) => (
