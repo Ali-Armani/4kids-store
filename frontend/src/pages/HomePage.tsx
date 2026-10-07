@@ -6,6 +6,7 @@ import { useProducts } from '../context/ProductsContext';
 import { CATEGORY_LABELS } from '../types/product';
 import { HOME_VISIBLE_CATEGORIES, buildHomeSections } from '../utils/homeSections';
 import styles from './HomePage.module.css';
+import { toPersianDigits } from '../utils/formatPrice';
 
 export function HomePage() {
   const { products, loading, error } = useProducts();
@@ -57,10 +58,29 @@ export function HomePage() {
                     مشاهده همه
                   </Link>
                 </div>
-                <div className="product-grid">
-                  {section.products.map((product) => (
-                    <ProductCard key={product.id} product={product} />
+                <div className={styles.sectionGrid}>
+                  {section.products.map((product, index) => (
+                    <div key={product.id} className={index === 3 ? styles.desktopOnly : undefined}>
+                      <ProductCard product={product} />
+                    </div>
                   ))}
+                  {section.total > 3 && (
+                    <Link
+                      to={`/shop?category=${section.category}`}
+                      className={`${styles.moreTile} ${section.total === 4 ? styles.moreTileCompactOnly : ''}`}
+                    >
+                      <span>
+                        سایر محصولات این دسته{' '}
+                        <span className="visually-hidden">{CATEGORY_LABELS[section.category]}</span>
+                      </span>
+                      <span className={styles.moreTileCount}>
+                        {toPersianDigits(section.total)} محصول
+                      </span>
+                      <span>
+                        مشاهده کامل این دسته <span aria-hidden="true">←</span>
+                      </span>
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}

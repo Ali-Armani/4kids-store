@@ -43,3 +43,61 @@
   font-size: clamp(1.15rem, 2.5vw, 1.5rem);
   font-weight: 800;
 }
+
+.sectionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.desktopOnly {
+  display: none;
+}
+
+.moreTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  min-height: 160px;
+  padding: var(--space-5) var(--space-3);
+  text-align: center;
+  line-height: 1.7;
+  font-weight: 700;
+  color: var(--color-accent-dark);
+  background: var(--color-accent-tint);
+  border: 1.5px dashed var(--color-accent);
+  border-radius: var(--radius-md);
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+.moreTile:hover {
+  background: var(--color-surface);
+  transform: translateY(-2px);
+}
+
+.moreTileCount {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-ink-soft);
+}
+
+@media (min-width: 768px) {
+  .sectionGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+}
+
+@media (min-width: 1024px) {
+  .sectionGrid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .desktopOnly {
+    display: block;
+  }
+  
+  .moreTileCompactOnly {
+    display: none;
+  }
+}
