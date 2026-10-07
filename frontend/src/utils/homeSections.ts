@@ -28,7 +28,7 @@ export const HOME_VISIBLE_CATEGORIES = HOME_CATEGORY_ORDER.filter(
 const HOME_MAX_PER_CATEGORY = 4;
 
 /** اول categoryRank (عدد کمتر زودتر، خالی آخر)، بعد جدیدترین */
-function compareForHome(a: Product, b: Product): number {
+export function compareForHome(a: Product, b: Product): number {
   const rankA = a.categoryRank ?? Number.POSITIVE_INFINITY;
   const rankB = b.categoryRank ?? Number.POSITIVE_INFINITY;
   if (rankA !== rankB) return rankA - rankB;

@@ -1,17 +1,36 @@
 import { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { ProductCard } from '../components/ProductCard/ProductCard';
 import { CategoryFilter, type CategoryValue } from '../components/CategoryFilter/CategoryFilter';
 import { SearchBar } from '../components/SearchBar/SearchBar';
 import { EmptyState } from '../components/EmptyState/EmptyState';
 import { useProducts } from '../context/ProductsContext';
 import { toPersianDigits } from '../utils/formatPrice';
-import { CATEGORY_LABELS, type ProductCategory } from '../types/product';
+import { compareForHome } from '../utils/homeSections';
+import { CATEGORY_LABELS, type Product, type ProductCategory } from '../types/product';
 import { usePageMeta } from '../hooks/usePageMeta';
 import styles from './ShopPage.module.css';
 
 // این دو دسته فقط اطلاعاتی‌اند و سبد خرید ندارند، پس «خرید» در عنوانشان نمی‌آید
 const INFO_ONLY_CATEGORIES: ProductCategory[] = ['pipe-lighter', 'vape'];
+
+const PAGE_SIZE = 30;
+
+/** page از آدرس ورودی کاربر است: فقط عدد صحیح ≥ ۱ پذیرفته می‌شود، هر چیز دیگر = صفحه‌ی ۱ */
+function parsePage(raw: string | null): number {
+  const value = Number(raw);
+  return Number.isSafeInteger(value) && value >= 1 ? value : 1;
+}
+
+/** جدیدترین اول؛ اگر تاریخ‌ها برابر بود، slug تعیین‌کننده است تا ترتیب همیشه ثابت بماند */
+function byNewest(a: Product, b: Product): number {
+  const diff = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  return diff !== 0 ? diff : a.slug.localeCompare(b.slug);
+}
+
+function byCategoryRank(a: Product, b: Product): number {
+  return compareForHome(a, b) || a.slug.localeCompare(b.slug);
+}
 
 export function ShopPage() {
   const { products, loading, error } = useProducts();
@@ -34,18 +53,9 @@ export function ShopPage() {
       ? categoryLabel
       : `خرید ${categoryLabel}`;
 
-  // این hook باید قبل از هر return شرطی بیاید
-  usePageMeta({
-    title: `${heading} | ۴کیدز`,
-    description: categoryLabel
-      ? `${heading} در فروشگاه آنلاین ۴کیدز؛ مشاهده مدل‌ها و قیمت‌ها.`
-      : 'مشاهده و خرید عروسک، اکسسوری مو، جاکلیدی و کیف چرم در فروشگاه آنلاین ۴کیدز.',
-    noindex: query.trim() !== '',
-  });
-
   const filtered = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    return products.filter((product) => {
+    const matches = products.filter((product) => {
       const matchesCategory = category === 'all' || product.category === category;
       const matchesQuery =
         normalizedQuery.length === 0 ||
@@ -53,10 +63,33 @@ export function ShopPage() {
         product.shortDescription.toLowerCase().includes(normalizedQuery);
       return matchesCategory && matchesQuery;
     });
+    // مرتب‌سازی صریح: دیتابیس ترتیب تضمین‌شده نمی‌دهد و بدون آن صفحه‌بندی جابه‌جا می‌شود
+    return matches.sort(category === 'all' ? byNewest : byCategoryRank);
   }, [products, query, category]);
 
-  const updateParams = (next: { q?: string; category?: CategoryValue }) => {
-    const params = new URLSearchParams(searchParams);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  // اگر page از آخرین صفحه بزرگ‌تر باشد، آخرین صفحه نمایش داده می‌شود
+  const currentPage = Math.min(parsePage(searchParams.get('page')), totalPages);
+
+  const pageProducts = useMemo(
+    () => filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [filtered, currentPage]
+  );
+
+  const pageSuffix = currentPage > 1 ? ` - صفحه ${toPersianDigits(currentPage)}` : '';
+
+  // این hook باید قبل از هر return شرطی بیاید
+  usePageMeta({
+    title: `${heading}${pageSuffix} | ۴کیدز`,
+    description: categoryLabel
+      ? `${heading} در فروشگاه آنلاین ۴کیدز؛ مشاهده مدل‌ها و قیمت‌ها.${pageSuffix}`
+      : `مشاهده و خرید عروسک، اکسسوری مو، جاکلیدی و کیف چرم در فروشگاه آنلاین ۴کیدز.${pageSuffix}`,
+    noindex: query.trim() !== '',
+  });
+
+  // هر بار جستجو یا دسته عوض شود، page حذف می‌شود تا کاربر به صفحه‌ی ۱ برگردد
+  const updateParams = (next: { q?: string; category?: CategoryValue }) => { const params = new URLSearchParams(searchParams);
+    params.delete('page');
     if (next.q !== undefined) {
       if (next.q) params.set('q', next.q);
       else params.delete('q');
@@ -67,6 +100,16 @@ export function ShopPage() {
     }
     setSearchParams(params);
   };
+
+  // آدرس یک صفحه‌ی مشخص، با حفظ q و category
+  const pageLink = (target: number) => {
+    const params = new URLSearchParams(searchParams);
+    if (target > 1) params.set('page', String(target));
+    else params.delete('page');
+    return { search: params.toString() };
+  };
+
+  const scrollToTop = () => window.scrollTo({ top: 0 });
 
   if (loading) {
     return (
@@ -100,15 +143,51 @@ export function ShopPage() {
         </div>
 
         {filtered.length > 0 ? (
-          <div className={`product-grid ${styles.grid}`}>
-            {filtered.map((product, index) => (
-              <ProductCard key={product.id} product={product} priority={index === 0} />
-            ))}
+          <div className={styles.results}>
+            <div className="product-grid">
+              {pageProducts.map((product, index) => (
+                <ProductCard key={product.id} product={product} priority={index === 0} />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <nav className={styles.pagination} aria-label="صفحه‌بندی محصولات">
+                {currentPage > 1 ? (
+                  <Link
+                    to={pageLink(currentPage - 1)}
+                    className={`btn btn-outline ${styles.pageBtn}`}
+                    onClick={scrollToTop}
+                  >
+                    <span aria-hidden="true">→</span> قبلی
+                  </Link>
+                ) : (
+                  <span className={`btn btn-outline ${styles.pageBtn} ${styles.pageDisabled}`} aria-disabled="true">
+                    <span aria-hidden="true">→</span> قبلی
+                  </span>
+                )}
+
+                <span className={styles.pageInfo} aria-live="polite">
+                  صفحه {toPersianDigits(currentPage)} از {toPersianDigits(totalPages)}
+                </span>
+
+                {currentPage < totalPages ? (
+                  <Link
+                    to={pageLink(currentPage + 1)}
+                    className={`btn btn-outline ${styles.pageBtn}`}
+                    onClick={scrollToTop}
+                  >
+                    بعدی <span aria-hidden="true">←</span>
+                  </Link>
+                ) : (
+                  <span className={`btn btn-outline ${styles.pageBtn} ${styles.pageDisabled}`} aria-disabled="true">
+                    بعدی <span aria-hidden="true">←</span>
+                  </span>
+                )}
+              </nav>
+            )}
           </div>
         ) : (
-          <EmptyState title="محصولی پیدا نشد" description="عبارت جستجو
-
-یا دسته‌بندی را تغییر دهید." />
+          <EmptyState title="محصولی پیدا نشد" description="عبارت جستجو یا دسته‌بندی را تغییر دهید." />
         )}
       </div>
     </div>

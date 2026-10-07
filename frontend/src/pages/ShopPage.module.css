@@ -9,8 +9,32 @@
   width: 100%;
 }
 
-.grid {
+.results {
   padding-bottom: var(--space-8);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.pageBtn {
+  padding-inline: var(--space-4);
+}
+
+.pageDisabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.pageInfo {
+  font-size: 0.9rem;
+  color: var(--color-ink-soft);
+  text-align: center;
+  white-space: nowrap;
 }
 
 @media (min-width: 720px) {
