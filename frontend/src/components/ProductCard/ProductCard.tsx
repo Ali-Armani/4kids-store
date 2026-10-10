@@ -6,8 +6,8 @@ import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useToast } from '../../context/ToastContext';
 import { formatToman, discountPercent } from '../../utils/formatPrice';
-import styles from './ProductCard.module.css';
 import { isInfoOnlyCategory, isPurchasable } from '../../utils/purchasable';
+import styles from './ProductCard.module.css';
 
 interface ProductCardProps {
   product: Product;
@@ -40,6 +40,33 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         <Link to={`/product/${product.slug}`} className={styles.mediaLink} aria-label={product.name}>
           <ProductMedia product={product} priority={priority} className={styles.media} />
         </Link>
+        <button
+          type="button"
+          className={styles.wishlistBtn}
+          onClick={handleToggleWishlist}
+          aria-pressed={wishlisted}
+          aria-label={
+            wishlisted ? `حذف ${product.name} از علاقه‌مندی‌ها` : `افزودن ${product.name} به علاقه‌مندی‌ها`
+          }
+        >
+          <HeartIcon filled={wishlisted} />
+        </button>
+        {discount && <span className={`badge badge-danger ${styles.discountBadge}`}>{discount}٪ تخفیف</span>}
+        {!infoOnly && !product.inStock && (
+          <span className={`badge ${styles.stockBadge}`}>ناموجود</span>
+        )}
+      </div>
+
+      <div className={styles.body}>
+        <Link to={`/product/${product.slug}`} className={styles.name}>
+          {product.name}
+        </Link>
+        <div className={styles.priceRow}>
+          <span className="price">{formatToman(product.price)}</span>
+          {product.compareAtPrice && (
+            <span className="price-compare">{formatToman(product.compareAtPrice)}</span>
+          )}
+        </div>
         {infoOnly ? (
           <Link to={`/product/${product.slug}`} className={`btn btn-outline ${styles.addBtn}`}>
             مشاهده اطلاعات
@@ -54,28 +81,6 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             {purchasable ? 'افزودن به سبد' : 'ناموجود'}
           </button>
         )}
-        {discount && <span className={`badge badge-danger ${styles.discountBadge}`}>{discount}٪ تخفیف</span>}
-        {!product.inStock && <span className={`badge ${styles.stockBadge}`}>ناموجود</span>}
-      </div>
-
-      <div className={styles.body}>
-        <Link to={`/product/${product.slug}`} className={styles.name}>
-          {product.name}
-        </Link>
-        <div className={styles.priceRow}>
-          <span className="price">{formatToman(product.price)}</span>
-          {product.compareAtPrice && (
-            <span className="price-compare">{formatToman(product.compareAtPrice)}</span>
-          )}
-        </div>
-        <button
-          type="button"
-          className={`btn btn-outline ${styles.addBtn}`}
-          onClick={handleAddToCart}
-          disabled={!product.inStock}
-        >
-          {product.inStock ? 'افزودن به سبد' : 'ناموجود'}
-        </button>
       </div>
     </article>
   );
