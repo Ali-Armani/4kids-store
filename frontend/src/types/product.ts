@@ -13,6 +13,32 @@ export type ProductCategory =
 
 export type PlaceholderHue = 'rose' | 'plum' | 'gold' | 'sky' | 'sage';
 
+export interface ProductVariant {
+  id: string;
+  sizeCm?: number;
+  colorId?: string;
+  price: number;
+  compareAtPrice?: number;
+  inStock: boolean;
+  isDefault: boolean;
+}
+
+export interface ProductColor {
+  id: string;
+  /** Safe lookup key (e.g. "red"). Never inject into CSS directly. */
+  key: string;
+  label: string;
+  sortOrder: number;
+}
+
+export interface ProductImage {
+  id: string;
+  colorId?: string;
+  url: string;
+  alt: string;
+  sortOrder: number;
+}
+
 export interface Product {
   id: string;
   slug: string;
@@ -31,6 +57,9 @@ export interface Product {
   inStock: boolean;
   categoryRank?: number;
   createdAt: string;
+  variants: ProductVariant[];
+  colors: ProductColor[];
+  images: ProductImage[];
 }
 
 export const CATEGORY_LABELS: Record<ProductCategory, string> = {
