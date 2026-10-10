@@ -8,6 +8,7 @@ import {
 } from 'react';
 import type { Product } from '../types/product';
 import { useProducts } from './ProductsContext';
+import { isPurchasable } from '../utils/purchasable';
 
 export interface CartLine {
   productId: string;
@@ -60,6 +61,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [lines]);
 
   const addToCart = (product: Product, quantity = 1) => {
+    if (!isPurchasable(product)) return;
     setLines((current) => {
       const existing = current.find((line) => line.productId === product.id);
       if (existing) {
@@ -94,7 +96,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       lines
         .map((line) => {
           const product = products.find((item) => item.id === line.productId);
-          return product ? { ...line, product } : null;
+          return product && isPurchasable(product) ? { ...line, product } : null;
         })
         .filter((item): item is CartItemDetailed => item !== null),
     [lines, products]

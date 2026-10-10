@@ -10,9 +10,7 @@ import { compareForHome } from '../utils/homeSections';
 import { CATEGORY_LABELS, type Product, type ProductCategory } from '../types/product';
 import { usePageMeta } from '../hooks/usePageMeta';
 import styles from './ShopPage.module.css';
-
-// این دو دسته فقط اطلاعاتی‌اند و سبد خرید ندارند، پس «خرید» در عنوانشان نمی‌آید
-const INFO_ONLY_CATEGORIES: ProductCategory[] = ['pipe-lighter', 'vape'];
+import { INFO_ONLY_CATEGORIES } from '../utils/purchasable';
 
 const PAGE_SIZE = 30;
 

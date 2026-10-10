@@ -12,6 +12,7 @@ import { formatToman, discountPercent } from '../utils/formatPrice';
 import { CATEGORY_LABELS } from '../types/product';
 import { usePageMeta } from '../hooks/usePageMeta';
 import styles from './ProductDetailPage.module.css';
+import { isInfoOnlyCategory, isPurchasable } from '../utils/purchasable';
 
 // توضیح متا برای گوگل باید کوتاه باشد (حدود ۱۵۵ حرف)
 function truncate(text: string, max: number) {
@@ -69,8 +70,11 @@ export function ProductDetailPage() {
 
   const discount = discountPercent(product.price, product.compareAtPrice);
   const wishlisted = isWishlisted(product.id);
+  const infoOnly = isInfoOnlyCategory(product.category);
+  const purchasable = isPurchasable(product);
 
   const handleAddToCart = () => {
+    if (!purchasable) return;
     addToCart(product, quantity);
     showToast('محصول به سبد خرید اضافه شد');
   };
@@ -114,26 +118,33 @@ export function ProductDetailPage() {
               <dt>رده سنی</dt>
               <dd>{product.ageRange}</dd>
             </div>
-            <div>
-              <dt>وضعیت موجودی</dt>
-              <dd
-
-className={product.inStock ? styles.inStock : styles.outOfStock}>
-                {product.inStock ? 'موجود' : 'ناموجود'}
-              </dd>
-            </div>
+            {!infoOnly && (
+              <div>
+                <dt>وضعیت موجودی</dt>
+                <dd className={product.inStock ? styles.inStock : styles.outOfStock}>
+                  {product.inStock ? 'موجود' : 'ناموجود'}
+                </dd>
+              </div>
+            )}
           </dl>
-
           <div className={styles.actionsRow}>
-            <QuantitySelector value={quantity} onChange={setQuantity} productName={product.name} />
-            <button
-              type="button"
-              className="btn btn-primary btn-block"
-              onClick={handleAddToCart}
-              disabled={!product.inStock}
-            >
-              {product.inStock ? 'افزودن به سبد خرید' : 'ناموجود'}
-            </button>
+            {infoOnly ? (
+              <p className={styles.description}>
+                این محصول فقط جهت اطلاع‌رسانی نمایش داده می‌شود. برای اطلاعات بیشتر با ما در ارتباط باشید.
+              </p>
+            ) : (
+              <>
+                <QuantitySelector value={quantity} onChange={setQuantity} productName={product.name} />
+                <button
+                  type="button"
+                  className="btn btn-primary btn-block"
+                  onClick={handleAddToCart}
+                  disabled={!purchasable}
+                >
+                  {purchasable ? 'افزودن به سبد خرید' : 'ناموجود'}
+                </button>
+              </>
+            )}
             <button
               type="button"
               className={`btn btn-outline ${styles.wishlistBtn}`}

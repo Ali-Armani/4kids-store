@@ -7,6 +7,7 @@ import { useWishlist } from '../../context/WishlistContext';
 import { useToast } from '../../context/ToastContext';
 import { formatToman, discountPercent } from '../../utils/formatPrice';
 import styles from './ProductCard.module.css';
+import { isInfoOnlyCategory, isPurchasable } from '../../utils/purchasable';
 
 interface ProductCardProps {
   product: Product;
@@ -19,8 +20,11 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   const { showToast } = useToast();
   const wishlisted = isWishlisted(product.id);
   const discount = discountPercent(product.price, product.compareAtPrice);
+  const infoOnly = isInfoOnlyCategory(product.category);
+  const purchasable = isPurchasable(product);
 
   const handleAddToCart = () => {
+    if (!purchasable) return;
     addToCart(product, 1);
     showToast('محصول به سبد خرید اضافه شد');
   };
@@ -36,17 +40,20 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         <Link to={`/product/${product.slug}`} className={styles.mediaLink} aria-label={product.name}>
           <ProductMedia product={product} priority={priority} className={styles.media} />
         </Link>
-        <button
-          type="button"
-          className={styles.wishlistBtn}
-          onClick={handleToggleWishlist}
-          aria-pressed={wishlisted}
-          aria-label={
-            wishlisted ? `حذف ${product.name} از علاقه‌مندی‌ها` : `افزودن ${product.name} به علاقه‌مندی‌ها`
-          }
-        >
-          <HeartIcon filled={wishlisted} />
-        </button>
+        {infoOnly ? (
+          <Link to={`/product/${product.slug}`} className={`btn btn-outline ${styles.addBtn}`}>
+            مشاهده اطلاعات
+          </Link>
+        ) : (
+          <button
+            type="button"
+            className={`btn btn-outline ${styles.addBtn}`}
+            onClick={handleAddToCart}
+            disabled={!purchasable}
+          >
+            {purchasable ? 'افزودن به سبد' : 'ناموجود'}
+          </button>
+        )}
         {discount && <span className={`badge badge-danger ${styles.discountBadge}`}>{discount}٪ تخفیف</span>}
         {!product.inStock && <span className={`badge ${styles.stockBadge}`}>ناموجود</span>}
       </div>

@@ -8,6 +8,7 @@ import { useToast } from '../../context/ToastContext';
 import { formatToman } from '../../utils/formatPrice';
 import { CATEGORY_LABELS } from '../../types/product';
 import styles from './HeroCarousel.module.css';
+import { isInfoOnlyCategory, isPurchasable } from '../../utils/purchasable';
 
 const AUTO_PLAY_MS = 3000;
 
@@ -53,6 +54,7 @@ export function HeroCarousel() {
   const activeProduct = slides[index];
 
   const handleQuickAdd = () => {
+    if (!isPurchasable(activeProduct)) return;
     addToCart(activeProduct, 1);
     showToast('محصول به سبد خرید اضافه شد');
   };
@@ -107,14 +109,16 @@ export function HeroCarousel() {
               )}
             </div>
             <div className={styles.actions}>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={handleQuickAdd}
-                disabled={!activeProduct.inStock}
-              >
-                {activeProduct.inStock ? 'افزودن سریع به سبد' : 'ناموجود'}
-              </button>
+              {!isInfoOnlyCategory(activeProduct.category) && (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleQuickAdd}
+                  disabled={!isPurchasable(activeProduct)}
+                >
+                  {isPurchasable(activeProduct) ? 'افزودن سریع به سبد' : 'ناموجود'}
+                </button>
+              )}
               <Link to={`/product/${activeProduct.slug}`} className="btn btn-outline">
                 مشاهده محصول
               </Link>
