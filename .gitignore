@@ -19,4 +19,4 @@ dist-ssr
 .env.local
 !.env.example
 
-supabase/local-content
+supabase/local-content/
